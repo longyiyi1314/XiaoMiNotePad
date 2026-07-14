@@ -1,5 +1,6 @@
 package com.xiaominote.app.ui.screen.settings
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,11 +12,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenu
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -138,19 +137,16 @@ fun SettingsScreen(
             SectionTitle("外观")
             val themeOptions = listOf("system" to "跟随系统", "light" to "浅色", "dark" to "深色")
             var themeExpanded by remember { mutableStateOf(false) }
-            ExposedDropdownMenuBox(expanded = themeExpanded, onExpandedChange = { themeExpanded = it }) {
-                OutlinedTextField(
-                    value = themeOptions.firstOrNull { it.first == state.darkTheme }?.second ?: "跟随系统",
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text("主题模式") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(themeExpanded) },
-                    modifier = Modifier.fillMaxWidth().menuAnchor(),
-                )
-                ExposedDropdownMenu(expanded = themeExpanded, onDismissRequest = { themeExpanded = false }) {
-                    themeOptions.forEach { (value, label) ->
-                        DropdownMenuItem(text = { Text(label) }, onClick = { viewModel.setDarkTheme(value); themeExpanded = false })
-                    }
+            OutlinedTextField(
+                value = themeOptions.firstOrNull { it.first == state.darkTheme }?.second ?: "跟随系统",
+                onValueChange = {},
+                readOnly = true,
+                label = { Text("主题模式") },
+                modifier = Modifier.fillMaxWidth().clickable { themeExpanded = true },
+            )
+            DropdownMenu(expanded = themeExpanded, onDismissRequest = { themeExpanded = false }) {
+                themeOptions.forEach { (value, label) ->
+                    DropdownMenuItem(text = { Text(label) }, onClick = { viewModel.setDarkTheme(value); themeExpanded = false })
                 }
             }
             SwitchRow(
