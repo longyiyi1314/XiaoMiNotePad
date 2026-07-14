@@ -141,7 +141,7 @@ class GithubSyncManager @Inject constructor(
         var count = 0
         for (folder in folders) {
             val path = "folders/${folder.remoteId}.json"
-            val payload = gson.toJson(folder.copy(localDirty = false))
+            val payload = gson.toJson(folder)
             val ok = putFile(owner, repo, path, branch, payload)
             if (ok) count++
         }
