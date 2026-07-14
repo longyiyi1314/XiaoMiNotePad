@@ -19,7 +19,7 @@ import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Gesture
 import androidx.compose.material.icons.filled.Highlight
-import androidx.compose.material.icons.filled.Pencil
+import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -46,7 +46,7 @@ private val penOptions = listOf(
     PenOption(PenType.BRUSH, Icons.Filled.Brush, "毛笔"),
     PenOption(PenType.MARKER, Icons.Filled.Gesture, "马克笔"),
     PenOption(PenType.HIGHLIGHTER, Icons.Filled.Highlight, "荧光笔"),
-    PenOption(PenType.PENCIL, Icons.Filled.Pencil, "铅笔"),
+    PenOption(PenType.PENCIL, Icons.Filled.AutoFixHigh, "铅笔"),
 )
 
 @Composable

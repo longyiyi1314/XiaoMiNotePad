@@ -7,7 +7,6 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -70,7 +69,7 @@ private fun DrawScope.drawVariableWidth(
     drawPath(
         path = path,
         color = color,
-        style = Stroke(
+        style = androidx.compose.ui.graphics.drawscope.Stroke(
             width = width,
             cap = cap,
             join = StrokeJoin.Round,
@@ -96,7 +95,7 @@ private fun DrawScope.drawPencil(stroke: Stroke) {
     drawPath(
         path = path,
         color = color,
-        style = Stroke(
+        style = androidx.compose.ui.graphics.drawscope.Stroke(
             width = width,
             cap = StrokeCap.Round,
             join = StrokeJoin.Round,

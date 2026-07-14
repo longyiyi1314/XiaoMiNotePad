@@ -13,6 +13,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenu
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -146,7 +147,7 @@ fun SettingsScreen(
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(themeExpanded) },
                     modifier = Modifier.fillMaxWidth().menuAnchor(),
                 )
-                androidx.compose.material3.ExposedDropdownMenu(expanded = themeExpanded, onDismissRequest = { themeExpanded = false }) {
+                ExposedDropdownMenu(expanded = themeExpanded, onDismissRequest = { themeExpanded = false }) {
                     themeOptions.forEach { (value, label) ->
                         DropdownMenuItem(text = { Text(label) }, onClick = { viewModel.setDarkTheme(value); themeExpanded = false })
                     }
