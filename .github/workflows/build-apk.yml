@@ -37,6 +37,9 @@ jobs:
           else
             VERSION="1.0.${{ github.run_number }}"
           fi
+          # Patch build.gradle.kts so the APK's internal version matches the release tag
+          sed -i "s/versionCode = .*/versionCode = ${{ github.run_number }}/" app/build.gradle.kts
+          sed -i "s/versionName = \".*\"/versionName = \"$VERSION\"/" app/build.gradle.kts
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "TAG=v$VERSION" >> $GITHUB_OUTPUT
 
