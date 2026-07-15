@@ -113,7 +113,7 @@ class DrawingState(
         if (stroke.isEmpty) return
         val currentPage = _pages.getOrNull(_currentPageIndex) ?: return
         if (stroke.isEraser) {
-            val tolerance = eraser.config.size * 1.5f
+            val tolerance = stroke.config.size * 1.5f
             val toRemove = currentPage.filter { s ->
                 stroke.points.any { p -> StrokeRenderer.hits(s, Offset(p.x, p.y), tolerance) }
             }

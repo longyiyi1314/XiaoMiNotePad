@@ -2,6 +2,7 @@ package com.xiaominote.app.ui.screen.editor
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,8 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.ArrowLeft
-import androidx.compose.material.icons.automirrored.filled.ArrowRight
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.Redo
 import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.Add
@@ -163,7 +163,7 @@ fun EditorScreen(
                         enabled = viewModel.drawingState.canGoPrevious,
                         modifier = Modifier.size(32.dp),
                     ) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowLeft, contentDescription = "上一页", modifier = Modifier.size(20.dp))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "上一页", modifier = Modifier.size(20.dp))
                     }
                     Text(
                         text = "${viewModel.drawingState.currentPageIndex + 1} / ${viewModel.drawingState.totalPages}",
@@ -175,7 +175,7 @@ fun EditorScreen(
                         enabled = viewModel.drawingState.canGoNext,
                         modifier = Modifier.size(32.dp),
                     ) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowRight, contentDescription = "下一页", modifier = Modifier.size(20.dp))
+                        Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "下一页", modifier = Modifier.size(20.dp))
                     }
                     IconButton(
                         onClick = { viewModel.addPage() },

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -90,11 +91,15 @@ fun PenToolbar(
         }
 
         // Color palette - grid layout
+        val colors = if (selectedType == PenType.HIGHLIGHTER) ColorPalette.highlightPresets else ColorPalette.presets
+        val rows = (colors.size + 7) / 8
         LazyVerticalGrid(
             columns = GridCells.Fixed(8),
             verticalArrangement = Arrangement.spacedBy(4.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier.padding(horizontal = 4.dp),
+            modifier = Modifier
+                .padding(horizontal = 4.dp)
+                .height((rows * 28).dp),
         ) {
             items(if (selectedType == PenType.HIGHLIGHTER) ColorPalette.highlightPresets else ColorPalette.presets) { color ->
                 val isSel = color == selectedColor
