@@ -121,7 +121,7 @@ private fun darkSchemeFromSeed(seed: Color) = when (seed) {
         primaryContainer = Color(0xFF00513F), onPrimaryContainer = Color(0xFF83F7D5),
         secondary = Color(0xFFB1CCBF), onSecondary = Color(0xFF1C352C),
         secondaryContainer = Color(0xFF334B42), onSecondaryContainer = Color(0xFFCDE8DB),
-        tertiary = Color(Color(0xFFA6CCDF).value), onTertiary = Color(0xFF073544),
+        tertiary = Color(0xFFA6CCDF), onTertiary = Color(0xFF073544),
         tertiaryContainer = Color(0xFF254B5B), onTertiaryContainer = Color(0xFFC2E8FB),
         background = Color(0xFF191C1A), onBackground = Color(0xFFE1E3E0),
         surface = Color(0xFF191C1A), onSurface = Color(0xFFE1E3E0),
