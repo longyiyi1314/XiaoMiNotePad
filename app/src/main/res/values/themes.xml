@@ -2,8 +2,8 @@
 <resources>
     <style name="Theme.NotePad" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@android:color/white</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@color/splash_bg</item>
+        <item name="android:navigationBarColor">@android:color/white</item>
     </style>
 
     <style name="Theme.NotePad.Splash" parent="Theme.NotePad">

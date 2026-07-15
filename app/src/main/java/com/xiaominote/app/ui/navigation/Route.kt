@@ -10,7 +10,7 @@ sealed class Route(val route: String) {
     data object FolderPicker : Route("folder_picker")
 
     // Editor takes a noteId argument (-1L for a new note) and optional folderId
-    data object Editor : Route("editor/{noteId}") {
+    data object Editor : Route("editor/{noteId}?folderId={folderId}") {
         const val ARG_NOTE_ID = "noteId"
         const val ARG_FOLDER_ID = "folderId"
         fun create(noteId: Long, folderId: Long? = null): String =

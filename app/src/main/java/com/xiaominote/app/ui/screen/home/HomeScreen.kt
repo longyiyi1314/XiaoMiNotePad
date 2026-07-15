@@ -98,13 +98,13 @@ fun HomeScreen(
     val scope = rememberCoroutineScope()
 
     // Process a share/view intent exactly once.
-    val handledIntent = remember { mutableStateOf(false) }
-    androidx.compose.runtime.LaunchedEffect(intent, handledIntent) {
-        if (!handledIntent.value && intent != null && intent.action != null) {
+    var handledIntent by remember { mutableStateOf(false) }
+    androidx.compose.runtime.LaunchedEffect(intent) {
+        if (!handledIntent && intent != null && intent.action != null) {
             viewModel.processShareIntent(intent) { noteId ->
                 onNoteClick(noteId)
             }
-            handledIntent.value = true
+            handledIntent = true
         }
     }
 
