@@ -103,7 +103,7 @@ class NoteRepository @Inject constructor(
         val now = System.currentTimeMillis()
         val copy = original.copy(
             id = 0,
-            remoteId = null,
+            remoteId = java.util.UUID.randomUUID().toString(),
             title = "${original.title} (副本)",
             folderId = folderId,
             createdAt = now,

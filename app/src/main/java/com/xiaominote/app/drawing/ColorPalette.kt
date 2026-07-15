@@ -36,7 +36,7 @@ object ColorPalette {
         Color(0x66D7CCC8), Color(0x66BCAAA4), Color(0x66A1887F), Color(0x668D6E63),
     )
 
-    fun toArgbLong(color: Color): Long = color.toArgb().toLong()
+    fun toArgbLong(color: Color): Long = color.pack
 
-    fun fromArgbLong(value: Long): Color = Color(value.toInt())
+    fun fromArgbLong(value: Long): Color = Color(value)
 }

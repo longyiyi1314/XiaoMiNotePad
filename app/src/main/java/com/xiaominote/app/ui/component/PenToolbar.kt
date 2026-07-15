@@ -125,16 +125,6 @@ fun PenToolbar(
                 onValueChange = onSizeChange,
                 valueRange = 1f..24f,
                 modifier = Modifier.padding(horizontal = 2.dp),
-                thumb = {
-                    androidx.compose.material3.SliderDefaults.Thumb(
-                        modifier = Modifier.size(14.dp),
-                    )
-                },
-                track = {
-                    androidx.compose.material3.SliderDefaults.Track(
-                        colors = androidx.compose.material3.SliderDefaults.trackColors(),
-                    )
-                },
             )
         }
     }
