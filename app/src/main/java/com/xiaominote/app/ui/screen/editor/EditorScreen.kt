@@ -5,14 +5,18 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowLeft
+import androidx.compose.material.icons.automirrored.filled.ArrowRight
 import androidx.compose.material.icons.automirrored.filled.Redo
 import androidx.compose.material.icons.automirrored.filled.Undo
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.FileUpload
 import androidx.compose.material.icons.filled.Save
@@ -113,7 +117,7 @@ fun EditorScreen(
                         Icon(Icons.Filled.FileUpload, contentDescription = "导入文件")
                     }
                     IconButton(onClick = {
-                        viewModel.saveDrawing(viewModel.drawingState.strokes)
+                        viewModel.saveDrawing()
                     }) {
                         Icon(Icons.Filled.Save, contentDescription = "保存")
                     }
@@ -144,6 +148,42 @@ fun EditorScreen(
                     palmRejection = true,
                     onStrokesChanged = { /* auto-save handles persistence */ },
                 )
+
+                // Page navigation bar
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconButton(
+                        onClick = { viewModel.previousPage() },
+                        enabled = viewModel.drawingState.canGoPrevious,
+                        modifier = Modifier.size(32.dp),
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowLeft, contentDescription = "上一页", modifier = Modifier.size(20.dp))
+                    }
+                    Text(
+                        text = "${viewModel.drawingState.currentPageIndex + 1} / ${viewModel.drawingState.totalPages}",
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                    )
+                    IconButton(
+                        onClick = { viewModel.nextPage() },
+                        enabled = viewModel.drawingState.canGoNext,
+                        modifier = Modifier.size(32.dp),
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowRight, contentDescription = "下一页", modifier = Modifier.size(20.dp))
+                    }
+                    IconButton(
+                        onClick = { viewModel.addPage() },
+                        modifier = Modifier.size(32.dp),
+                    ) {
+                        Icon(Icons.Filled.Add, contentDescription = "添加页面", modifier = Modifier.size(20.dp))
+                    }
+                }
 
                 // Floating pen toolbar at the bottom.
                 Column(

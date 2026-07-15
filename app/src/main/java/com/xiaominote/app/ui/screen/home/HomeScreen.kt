@@ -206,18 +206,23 @@ fun HomeScreen(
                             IconButton(onClick = { showMenu = true }) {
                                 Icon(Icons.Filled.MoreVert, contentDescription = "更多")
                             }
-                            DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
+                            DropdownMenu(
+                                expanded = showMenu,
+                                onDismissRequest = { showMenu = false },
+                                containerColor = MaterialTheme.colorScheme.surface,
+                                contentColor = MaterialTheme.colorScheme.onSurface,
+                            ) {
                                 DropdownMenuItem(
-                                    text = { Text("回收站") },
+                                    text = { Text("回收站", color = MaterialTheme.colorScheme.onSurface) },
                                     onClick = { showMenu = false; onOpenRecycleBin() },
-                                    leadingIcon = { Icon(Icons.Filled.Delete, null) }
+                                    leadingIcon = { Icon(Icons.Filled.Delete, null, tint = MaterialTheme.colorScheme.onSurface) }
                                 )
                                 DropdownMenuItem(
-                                    text = { Text("备份与恢复") },
+                                    text = { Text("备份与恢复", color = MaterialTheme.colorScheme.onSurface) },
                                     onClick = { showMenu = false; onOpenBackup() },
                                 )
                                 DropdownMenuItem(
-                                    text = { Text("设置") },
+                                    text = { Text("设置", color = MaterialTheme.colorScheme.onSurface) },
                                     onClick = { showMenu = false; onOpenSettings() },
                                 )
                             }

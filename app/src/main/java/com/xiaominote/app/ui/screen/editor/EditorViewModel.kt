@@ -58,8 +58,8 @@ class EditorViewModel @Inject constructor(
             val attachments = noteRepository.getAttachments(effectiveId)
             val bgPath = findBackgroundImagePath(attachments)
             if (note != null) {
-                val strokes = StrokeCodec.decode(note.drawingJson)
-                drawingState.replaceAll(strokes)
+                val pages = StrokeCodec.decodePages(note.drawingJson)
+                drawingState.replaceAll(pages)
                 _uiState.value = EditorUiState(
                     noteId = note.id,
                     title = note.title,
@@ -117,6 +117,11 @@ class EditorViewModel @Inject constructor(
     fun redo() = drawingState.redo()
     fun clearCanvas() = drawingState.clearAll()
 
+    fun goToPage(index: Int) = drawingState.goToPage(index)
+    fun nextPage() = drawingState.nextPage()
+    fun previousPage() = drawingState.previousPage()
+    fun addPage() = drawingState.addPage()
+
     fun toggleFavorite() {
         viewModelScope.launch {
             noteRepository.toggleFavorite(_uiState.value.noteId)
@@ -125,11 +130,12 @@ class EditorViewModel @Inject constructor(
     }
 
     /** Persist the current strokes to the database (debounced by the screen). */
-    fun saveDrawing(strokes: List<Stroke>) {
+    fun saveDrawing() {
         val id = _uiState.value.noteId
         if (id <= 0L) return
         viewModelScope.launch {
-            noteRepository.saveDrawing(id, strokes)
+            val allPages = drawingState.getAllPages()
+            noteRepository.saveDrawing(id, allPages)
         }
     }
 

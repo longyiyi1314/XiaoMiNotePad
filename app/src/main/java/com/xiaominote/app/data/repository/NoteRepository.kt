@@ -61,11 +61,11 @@ class NoteRepository @Inject constructor(
         noteDao.update(note.copy(updatedAt = System.currentTimeMillis(), localDirty = true))
     }
 
-    suspend fun saveDrawing(noteId: Long, strokes: List<Stroke>) {
+    suspend fun saveDrawing(noteId: Long, pages: List<List<Stroke>>) {
         val note = noteDao.getById(noteId) ?: return
         noteDao.update(
             note.copy(
-                drawingJson = StrokeCodec.encode(strokes),
+                drawingJson = StrokeCodec.encodePages(pages),
                 updatedAt = System.currentTimeMillis(),
                 localDirty = true,
             )

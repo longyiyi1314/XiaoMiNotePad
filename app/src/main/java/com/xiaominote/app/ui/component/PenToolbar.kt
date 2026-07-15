@@ -9,8 +9,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -88,17 +89,22 @@ fun PenToolbar(
             }
         }
 
-        // Color palette + custom
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        // Color palette - grid layout
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(8),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier.padding(horizontal = 4.dp),
+        ) {
             items(if (selectedType == PenType.HIGHLIGHTER) ColorPalette.highlightPresets else ColorPalette.presets) { color ->
                 val isSel = color == selectedColor
                 Box(
                     modifier = Modifier
-                        .size(28.dp)
+                        .size(24.dp)
                         .clip(CircleShape)
                         .background(color)
                         .then(
-                            if (isSel) Modifier.border(3.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                            if (isSel) Modifier.border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
                             else Modifier.border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
                         )
                         .clickable { onSelectColor(color) }
