@@ -63,8 +63,24 @@ fun RecycleBinScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-                Icon(Icons.Filled.DeleteForever, null, modifier = Modifier.padding(16.dp), tint = MaterialTheme.colorScheme.outline)
-                Text("回收站为空", color = MaterialTheme.colorScheme.outline)
+                Icon(
+                    Icons.Filled.DeleteForever,
+                    contentDescription = null,
+                    modifier = Modifier.padding(16.dp).size(72.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer8()
+                Text(
+                    "回收站为空",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Spacer4()
+                Text(
+                    "删除的笔记会暂时保存在这里",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         } else {
             LazyColumn(
@@ -98,13 +114,46 @@ private fun TrashedNoteItem(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(note.title.ifBlank { "无标题笔记" }, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(
+                    note.title.ifBlank { "无标题笔记" },
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Spacer4()
                 if (deletedAt.isNotBlank()) {
-                    Text("删除于 $deletedAt", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(
+                        "删除于 $deletedAt",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
             }
-            IconButton(onClick = onRestore) { Icon(Icons.Filled.Restore, contentDescription = "恢复") }
-            IconButton(onClick = onDelete) { Icon(Icons.Filled.DeleteForever, contentDescription = "永久删除") }
+            IconButton(onClick = onRestore) {
+                Icon(
+                    Icons.Filled.Restore,
+                    contentDescription = "恢复",
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+            }
+            IconButton(onClick = onDelete) {
+                Icon(
+                    Icons.Filled.DeleteForever,
+                    contentDescription = "永久删除",
+                    tint = MaterialTheme.colorScheme.error,
+                )
+            }
         }
     }
+}
+
+@Composable
+private fun Spacer4() {
+    Box(modifier = Modifier.size(4.dp))
+}
+
+@Composable
+private fun Spacer8() {
+    Box(modifier = Modifier.size(8.dp))
 }

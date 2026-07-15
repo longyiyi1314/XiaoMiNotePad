@@ -72,12 +72,10 @@ fun EditorScreen(
                     }
                 },
                 title = {
-                    OutlinedTextField(
-                        value = uiState.title,
-                        onValueChange = viewModel::updateTitle,
-                        placeholder = { Text("笔记标题") },
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth(),
+                    Text(
+                        text = uiState.title.ifBlank { "无标题笔记" },
+                        maxLines = 1,
+                        style = MaterialTheme.typography.titleLarge,
                     )
                 },
                 actions = {
@@ -122,33 +120,47 @@ fun EditorScreen(
             )
         }
     ) { padding ->
-        Box(modifier = Modifier
+        Column(modifier = Modifier
             .fillMaxSize()
             .padding(padding)) {
 
-            DrawingCanvas(
-                state = viewModel.drawingState,
-                paperColor = Color(uiState.paperColor),
-                palmRejection = true,
-                onStrokesChanged = { /* auto-save handles persistence */ },
+            OutlinedTextField(
+                value = uiState.title,
+                onValueChange = viewModel::updateTitle,
+                placeholder = { Text("输入笔记标题…") },
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                textStyle = MaterialTheme.typography.titleMedium,
             )
 
-            // Floating pen toolbar at the bottom.
-            Column(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .padding(12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                com.xiaominote.app.ui.component.PenToolbar(
-                    selectedType = penConfig.type,
-                    selectedColor = ColorPalette.fromArgbLong(penConfig.color),
-                    penSize = penConfig.size,
-                    onSelectType = viewModel::selectPenType,
-                    onSelectColor = viewModel::selectColor,
-                    onSizeChange = viewModel::setPenSize,
+            Box(modifier = Modifier.fillMaxSize()) {
+                DrawingCanvas(
+                    state = viewModel.drawingState,
+                    paperColor = Color(uiState.paperColor),
+                    backgroundImagePath = uiState.backgroundImagePath,
+                    palmRejection = true,
+                    onStrokesChanged = { /* auto-save handles persistence */ },
                 )
+
+                // Floating pen toolbar at the bottom.
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    com.xiaominote.app.ui.component.PenToolbar(
+                        selectedType = penConfig.type,
+                        selectedColor = ColorPalette.fromArgbLong(penConfig.color),
+                        penSize = penConfig.size,
+                        onSelectType = viewModel::selectPenType,
+                        onSelectColor = viewModel::selectColor,
+                        onSizeChange = viewModel::setPenSize,
+                    )
+                }
             }
         }
     }
