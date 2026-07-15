@@ -1,6 +1,8 @@
 name: Build Release APK
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       version:
@@ -8,9 +10,14 @@ on:
         required: true
         default: '1.0.0'
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -21,6 +28,17 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: gradle
+
+      - name: Set version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="1.0.${{ github.run_number }}"
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "TAG=v$VERSION" >> $GITHUB_OUTPUT
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -47,15 +65,21 @@ jobs:
           name: release-apk
           path: app/build/outputs/apk/release/*.apk
 
+      - name: Rename APK files for release
+        run: |
+          mkdir -p release-assets
+          cp app/build/outputs/apk/debug/*.apk release-assets/app-debug.apk
+          cp app/build/outputs/apk/release/*.apk release-assets/app-release.apk
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ github.event.inputs.version }}
-          name: Release v${{ github.event.inputs.version }}
+          tag_name: ${{ steps.version.outputs.TAG }}
+          name: Release ${{ steps.version.outputs.TAG }}
           body: |
             ## Release Notes
             
-            小米平板笔记应用 - 版本 ${{ github.event.inputs.version }}
+            小米平板笔记应用 - 版本 ${{ steps.version.outputs.VERSION }}
             
             ### 功能特性
             - ✅ 小米智能笔支持 (压力感知、手掌抑制)
@@ -68,7 +92,10 @@ jobs:
             - ✅ 笔记文件夹分类
             
             ### 下载
-            - [debug.apk](https://github.com/${{ github.repository }}/releases/download/v${{ github.event.inputs.version }}/app-debug.apk)
-            - [release.apk](https://github.com/${{ github.repository }}/releases/download/v${{ github.event.inputs.version }}/app-release.apk)
+            | 文件 | 说明 |
+            |------|------|
+            | app-debug.apk | Debug 版本 (包含调试信息) |
+            | app-release.apk | Release 版本 (推荐安装) |
+          files: release-assets/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
