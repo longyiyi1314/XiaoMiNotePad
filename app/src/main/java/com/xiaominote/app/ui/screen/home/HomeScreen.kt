@@ -210,7 +210,6 @@ fun HomeScreen(
                                 expanded = showMenu,
                                 onDismissRequest = { showMenu = false },
                                 containerColor = MaterialTheme.colorScheme.surface,
-                                contentColor = MaterialTheme.colorScheme.onSurface,
                             ) {
                                 DropdownMenuItem(
                                     text = { Text("回收站", color = MaterialTheme.colorScheme.onSurface) },

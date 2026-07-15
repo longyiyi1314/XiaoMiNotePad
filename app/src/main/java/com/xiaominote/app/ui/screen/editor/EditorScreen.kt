@@ -64,7 +64,7 @@ fun EditorScreen(
     // Auto-save when the committed stroke list changes.
     LaunchedEffect(viewModel.drawingState.strokes.size) {
         if (uiState.isLoaded) {
-            viewModel.saveDrawing(viewModel.drawingState.strokes)
+            viewModel.saveDrawing()
         }
     }
 
