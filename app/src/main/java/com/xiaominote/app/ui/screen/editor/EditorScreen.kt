@@ -144,7 +144,7 @@ fun EditorScreen(
             Box(modifier = Modifier.fillMaxSize()) {
                 DrawingCanvas(
                     state = viewModel.drawingState,
-                    paperColor = Color(uiState.paperColor),
+                    paperColor = Color(uiState.paperColor.toInt()),
                     backgroundImagePath = uiState.backgroundImagePath,
                     palmRejection = true,
                     onStrokesChanged = { /* auto-save handles persistence */ },

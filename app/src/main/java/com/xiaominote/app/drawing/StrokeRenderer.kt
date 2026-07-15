@@ -104,7 +104,7 @@ private fun DrawScope.drawPencil(stroke: Stroke) {
     )
 }
 
-private fun paintColor(config: PenConfig): Color = Color(config.color)
+private fun paintColor(config: PenConfig): Color = Color(config.color.toInt())
 
 private fun effectiveWidth(config: PenConfig, pressure: Float): Float {
     val base = config.size

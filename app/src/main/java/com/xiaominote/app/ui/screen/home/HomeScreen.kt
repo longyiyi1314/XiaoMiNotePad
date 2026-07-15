@@ -341,7 +341,7 @@ private fun FolderDrawerItem(
             Icon(
                 Icons.Filled.Folder,
                 contentDescription = null,
-                tint = Color(folder.color),
+                tint = Color(folder.color.toInt()),
             )
         },
         label = { Text(folder.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
@@ -360,14 +360,14 @@ private fun FolderDrawerItem(
 private fun FolderChip(folder: FolderEntity, onClick: () -> Unit) {
     Card(
         onClick = onClick,
-        colors = CardDefaults.cardColors(containerColor = Color(folder.color).copy(alpha = 0.15f)),
+        colors = CardDefaults.cardColors(containerColor = Color(folder.color.toInt()).copy(alpha = 0.15f)),
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            Icon(Icons.Filled.Folder, contentDescription = null, tint = Color(folder.color), modifier = Modifier.size(20.dp))
+            Icon(Icons.Filled.Folder, contentDescription = null, tint = Color(folder.color.toInt()), modifier = Modifier.size(20.dp))
             Text(folder.name, style = MaterialTheme.typography.labelLarge)
         }
     }
@@ -386,7 +386,7 @@ private fun NoteCard(
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(note.coverColor).copy(alpha = 0.3f)),
+        colors = CardDefaults.cardColors(containerColor = Color(note.coverColor.toInt()).copy(alpha = 0.3f)),
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -510,7 +510,7 @@ private fun FolderPickerDialog(
                             .padding(horizontal = 16.dp, vertical = 12.dp),
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Filled.Folder, contentDescription = null, tint = Color(folder.color), modifier = Modifier.size(24.dp))
+                            Icon(Icons.Filled.Folder, contentDescription = null, tint = Color(folder.color.toInt()), modifier = Modifier.size(24.dp))
                             Spacer(Modifier.width(12.dp))
                             Text(folder.name, style = MaterialTheme.typography.bodyLarge)
                         }

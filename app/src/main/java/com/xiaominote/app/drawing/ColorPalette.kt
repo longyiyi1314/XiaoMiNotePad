@@ -44,5 +44,5 @@ object ColorPalette {
         return a or r or g or b
     }
 
-    fun fromArgbLong(value: Long): Color = Color(value)
+    fun fromArgbLong(value: Long): Color = Color(value.toInt())
 }
