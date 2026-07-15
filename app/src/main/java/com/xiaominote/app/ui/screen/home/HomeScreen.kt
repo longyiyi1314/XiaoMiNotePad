@@ -78,7 +78,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     onNoteClick: (Long) -> Unit,
-    onCreateNote: () -> Unit,
+    onCreateNote: (Long?) -> Unit,
     onOpenSettings: () -> Unit,
     onOpenRecycleBin: () -> Unit,
     onOpenBackup: () -> Unit,
@@ -89,6 +89,8 @@ fun HomeScreen(
     var showCreateFolder by remember { mutableStateOf(false) }
     var showMenu by remember { mutableStateOf(false) }
     var searchOpen by remember { mutableStateOf(false) }
+    var showFolderPicker by remember { mutableStateOf(false) }
+    var selectedNoteId by remember { mutableStateOf<Long>(-1L) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -231,7 +233,7 @@ fun HomeScreen(
             },
             floatingActionButton = {
                 ExtendedFloatingActionButton(
-                    onClick = onCreateNote,
+                    onClick = { onCreateNote(state.currentFolderId) },
                     icon = { Icon(Icons.Filled.Add, null) },
                     text = { Text("新建笔记") },
                 )
@@ -289,6 +291,9 @@ fun HomeScreen(
                                 note = note,
                                 onClick = { onNoteClick(note.id) },
                                 onToggleFavorite = { viewModel.toggleFavorite(note.id) },
+                                onMove = { selectedNoteId = note.id; showFolderPicker = true },
+                                onCopy = { viewModel.copyNote(note.id, state.currentFolderId) },
+                                onTrash = { viewModel.trashNote(note.id) },
                             )
                         }
                     }
@@ -303,6 +308,19 @@ fun HomeScreen(
             onConfirm = { name ->
                 viewModel.createFolder(name, 0xFF1B6B57)
                 showCreateFolder = false
+            }
+        )
+    }
+
+    if (showFolderPicker) {
+        FolderPickerDialog(
+            folders = state.allFolders,
+            onDismiss = { showFolderPicker = false },
+            onSelectFolder = { folderId ->
+                if (selectedNoteId > 0L) {
+                    viewModel.moveNoteToFolder(selectedNoteId, folderId)
+                }
+                showFolderPicker = false
             }
         )
     }
@@ -357,7 +375,11 @@ private fun NoteCard(
     note: NoteEntity,
     onClick: () -> Unit,
     onToggleFavorite: () -> Unit,
+    onMove: () -> Unit,
+    onCopy: () -> Unit,
+    onTrash: () -> Unit,
 ) {
+    var showMenu by remember { mutableStateOf(false) }
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
@@ -379,6 +401,32 @@ private fun NoteCard(
                         tint = if (note.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                         modifier = Modifier.size(20.dp),
                     )
+                }
+                Box {
+                    IconButton(onClick = { showMenu = true }, modifier = Modifier.size(28.dp)) {
+                        Icon(Icons.Filled.MoreVert, contentDescription = "更多", modifier = Modifier.size(20.dp))
+                    }
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false },
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("移动", color = MaterialTheme.colorScheme.onSurface) },
+                            onClick = { showMenu = false; onMove() },
+                            leadingIcon = { Icon(Icons.Filled.Folder, null, tint = MaterialTheme.colorScheme.onSurface) }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("复制", color = MaterialTheme.colorScheme.onSurface) },
+                            onClick = { showMenu = false; onCopy() },
+                            leadingIcon = { Icon(Icons.Filled.Create, null, tint = MaterialTheme.colorScheme.onSurface) }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("删除", color = MaterialTheme.colorScheme.error) },
+                            onClick = { showMenu = false; onTrash() },
+                            leadingIcon = { Icon(Icons.Filled.Delete, null, tint = MaterialTheme.colorScheme.error) }
+                        )
+                    }
                 }
             }
             Spacer8()
@@ -421,6 +469,53 @@ private fun CreateFolderDialog(onDismiss: () -> Unit, onConfirm: (String) -> Uni
         confirmButton = {
             TextButton(onClick = { if (name.isNotBlank()) onConfirm(name.trim()) }) { Text("创建") }
         },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("取消") } }
+    )
+}
+
+@Composable
+private fun FolderPickerDialog(
+    folders: List<FolderEntity>,
+    onDismiss: () -> Unit,
+    onSelectFolder: (Long?) -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("选择目标文件夹") },
+        text = {
+            Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable { onSelectFolder(null); onDismiss() }
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Filled.Folder, contentDescription = null, modifier = Modifier.size(24.dp))
+                        Spacer(Modifier.width(12.dp))
+                        Text("根目录", style = MaterialTheme.typography.bodyLarge)
+                    }
+                }
+                Divider(modifier = Modifier.padding(vertical = 4.dp))
+                folders.forEach { folder ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .clickable { onSelectFolder(folder.id); onDismiss() }
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Filled.Folder, contentDescription = null, tint = Color(folder.color), modifier = Modifier.size(24.dp))
+                            Spacer(Modifier.width(12.dp))
+                            Text(folder.name, style = MaterialTheme.typography.bodyLarge)
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {},
         dismissButton = { TextButton(onClick = onDismiss) { Text("取消") } }
     )
 }

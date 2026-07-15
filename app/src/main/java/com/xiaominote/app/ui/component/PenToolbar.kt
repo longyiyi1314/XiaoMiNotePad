@@ -63,18 +63,18 @@ fun PenToolbar(
 ) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.95f))
-            .padding(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.92f))
+            .padding(6.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         // Pen types
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(horizontalArrangement = Arrangement.spacedBy(3.dp), verticalAlignment = Alignment.CenterVertically) {
             penOptions.forEach { option ->
                 val selected = option.type == selectedType
                 Box(
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(32.dp)
                         .clip(CircleShape)
                         .background(if (selected) MaterialTheme.colorScheme.primary else Color.Transparent)
                         .clickable { onSelectType(option.type) },
@@ -84,7 +84,7 @@ fun PenToolbar(
                         imageVector = option.icon,
                         contentDescription = option.label,
                         tint = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(22.dp),
+                        modifier = Modifier.size(18.dp),
                     )
                 }
             }
@@ -95,17 +95,17 @@ fun PenToolbar(
         val rows = (colors.size + 7) / 8
         LazyVerticalGrid(
             columns = GridCells.Fixed(8),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(3.dp),
+            horizontalArrangement = Arrangement.spacedBy(3.dp),
             modifier = Modifier
-                .padding(horizontal = 4.dp)
-                .height((rows * 28).dp),
+                .padding(horizontal = 2.dp)
+                .height((rows * 22).dp),
         ) {
             items(if (selectedType == PenType.HIGHLIGHTER) ColorPalette.highlightPresets else ColorPalette.presets) { color ->
                 val isSel = color == selectedColor
                 Box(
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(18.dp)
                         .clip(CircleShape)
                         .background(color)
                         .then(
@@ -117,14 +117,24 @@ fun PenToolbar(
             }
         }
 
-        // Size slider
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        // Size slider - more compact
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             Text("粗细", style = MaterialTheme.typography.labelSmall)
             Slider(
                 value = penSize,
                 onValueChange = onSizeChange,
                 valueRange = 1f..24f,
-                modifier = Modifier.padding(horizontal = 4.dp),
+                modifier = Modifier.padding(horizontal = 2.dp),
+                thumb = {
+                    androidx.compose.material3.SliderDefaults.Thumb(
+                        modifier = Modifier.size(14.dp),
+                    )
+                },
+                track = {
+                    androidx.compose.material3.SliderDefaults.Track(
+                        colors = androidx.compose.material3.SliderDefaults.trackColors(),
+                    )
+                },
             )
         }
     }

@@ -177,6 +177,10 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch { noteRepository.moveToFolder(noteId, folderId) }
     }
 
+    fun copyNote(noteId: Long, folderId: Long? = null) {
+        viewModelScope.launch { noteRepository.copyNote(noteId, folderId) }
+    }
+
     /**
      * Processes an incoming share/view intent (PDF/PPT/Word/image): creates a
      * new note, imports the document, then navigates to the editor.

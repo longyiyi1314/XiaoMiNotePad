@@ -30,13 +30,14 @@ fun NotePadNavGraph(
         navController = navController,
         startDestination = Route.Home.route
     ) {
-        composable(Route.Home.route) {
+        composable(Route.Home.route) { backStackEntry ->
+            val folderId = backStackEntry.arguments?.getLong(Route.Editor.ARG_FOLDER_ID)
             HomeScreen(
                 onNoteClick = { noteId ->
                     navController.navigate(Route.Editor.create(noteId))
                 },
-                onCreateNote = {
-                    navController.navigate(Route.Editor.create(Route.Editor.NEW_NOTE_ID))
+                onCreateNote = { targetFolderId ->
+                    navController.navigate(Route.Editor.create(Route.Editor.NEW_NOTE_ID, targetFolderId))
                 },
                 onOpenSettings = { navController.navigate(Route.Settings.route) },
                 onOpenRecycleBin = { navController.navigate(Route.RecycleBin.route) },
@@ -48,13 +49,20 @@ fun NotePadNavGraph(
         composable(
             route = Route.Editor.route,
             arguments = listOf(
-                navArgument(Route.Editor.ARG_NOTE_ID) { type = NavType.LongType }
+                navArgument(Route.Editor.ARG_NOTE_ID) { type = NavType.LongType },
+                navArgument(Route.Editor.ARG_FOLDER_ID) { 
+                    type = NavType.LongType 
+                    nullable = true
+                    defaultValue = null 
+                }
             )
         ) { backStackEntry ->
             val noteId = backStackEntry.arguments?.getLong(Route.Editor.ARG_NOTE_ID)
                 ?: Route.Editor.NEW_NOTE_ID
+            val folderId = backStackEntry.arguments?.getLong(Route.Editor.ARG_FOLDER_ID)
             EditorScreen(
                 noteId = noteId,
+                folderId = folderId,
                 onBack = { navController.popBackStack() },
             )
         }

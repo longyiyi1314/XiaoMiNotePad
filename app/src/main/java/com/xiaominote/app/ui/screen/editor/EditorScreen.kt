@@ -47,10 +47,11 @@ import com.xiaominote.app.drawing.DrawingCanvas
 @Composable
 fun EditorScreen(
     noteId: Long,
+    folderId: Long? = null,
     onBack: () -> Unit,
     viewModel: EditorViewModel = hiltViewModel(),
 ) {
-    LaunchedEffect(noteId) { viewModel.load(noteId) }
+    LaunchedEffect(noteId) { viewModel.load(noteId, folderId) }
 
     val uiState by viewModel.uiState.collectAsState()
     val penConfig = viewModel.drawingState.penConfig

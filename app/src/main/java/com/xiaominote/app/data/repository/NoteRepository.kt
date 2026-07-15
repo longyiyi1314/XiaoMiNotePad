@@ -98,6 +98,22 @@ class NoteRepository @Inject constructor(
         noteDao.moveToFolder(id, folderId)
     }
 
+    suspend fun copyNote(id: Long, folderId: Long? = null): Long {
+        val original = noteDao.getById(id) ?: return -1L
+        val now = System.currentTimeMillis()
+        val copy = original.copy(
+            id = 0,
+            remoteId = null,
+            title = "${original.title} (副本)",
+            folderId = folderId,
+            createdAt = now,
+            updatedAt = now,
+            localDirty = true,
+            lastSyncedAt = null,
+        )
+        return noteDao.upsert(copy)
+    }
+
     // ---- Recycle bin ----
     suspend fun trash(id: Long) = noteDao.trash(id)
     suspend fun restore(id: Long) = noteDao.restore(id)

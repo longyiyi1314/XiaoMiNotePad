@@ -46,11 +46,11 @@ class EditorViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(EditorUiState())
     val uiState: StateFlow<EditorUiState> = _uiState.asStateFlow()
 
-    fun load(noteId: Long) {
+    fun load(noteId: Long, folderId: Long? = null) {
         if (_uiState.value.noteId == noteId && _uiState.value.isLoaded) return
         viewModelScope.launch {
             val effectiveId = if (noteId <= 0L) {
-                noteRepository.createNote()
+                noteRepository.createNote(folderId = folderId)
             } else {
                 noteId
             }
