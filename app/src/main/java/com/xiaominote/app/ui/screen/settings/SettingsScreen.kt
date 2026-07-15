@@ -1,14 +1,10 @@
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.xiaominote.app.ui.screen.settings
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -172,9 +168,8 @@ fun SettingsScreen(
             Spacer(Modifier.size(8.dp))
             Text("主题配色", style = MaterialTheme.typography.bodyLarge)
             Spacer(Modifier.size(4.dp))
-            FlowRow(
+            Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 ThemeSeed.entries.forEach { seed ->
                     ThemeSeedItem(
