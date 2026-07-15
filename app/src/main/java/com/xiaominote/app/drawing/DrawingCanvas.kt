@@ -21,6 +21,7 @@ import androidx.compose.ui.input.pointer.PointerEvent
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.IntSize
 /**
  * The handwriting/drawing surface. Supports finger and stylus input.
  *
@@ -89,7 +90,7 @@ fun DrawingCanvas(
             translate(left, top) {
                 drawImage(
                     image = bmp,
-                    dstSize = androidx.compose.ui.geometry.Size(drawW, drawH),
+                    dstSize = IntSize(drawW.toInt(), drawH.toInt()),
                 )
             }
         }
