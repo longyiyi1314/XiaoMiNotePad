@@ -37,6 +37,20 @@ data class HomeUiState(
     val showSidebar: Boolean = false,
 )
 
+private data class NavState(
+    val folderId: Long?,
+    val tab: HomeTab,
+    val query: String,
+    val sidebar: Boolean,
+)
+
+private data class ListState(
+    val folders: List<FolderEntity>,
+    val allFolders: List<FolderEntity>,
+    val notes: List<NoteEntity>,
+    val counts: List<com.xiaominote.app.data.db.dao.FolderNoteCount>,
+)
+
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -67,23 +81,30 @@ class HomeViewModel @Inject constructor(
     private val allFoldersFlow = folderRepository.observeAll()
     private val noteCountsFlow = noteRepository.observeNoteCountsByFolder()
 
-    val uiState: StateFlow<HomeUiState> = combine(
-        foldersFlow, allFoldersFlow, notesFlow, noteCountsFlow, currentFolder, tab, query, sidebarOpen
-    ) { folders, allFolders, notes, counts, folderId, currentTab, q, sidebar ->
-        val folderName = folderId?.let { id -> allFolders.firstOrNull { it.id == id }?.name }
-        val countMap = counts.associate { it.folderId to it.count }
-        val total = counts.sumOf { it.count }
+    // Combine in two steps because combine() supports at most 5 flows.
+    private val navState = combine(currentFolder, tab, query, sidebarOpen) { folderId, currentTab, q, sidebar ->
+        NavState(folderId, currentTab, q, sidebar)
+    }
+
+    private val listState = combine(foldersFlow, allFoldersFlow, notesFlow, noteCountsFlow) { folders, allFolders, notes, counts ->
+        ListState(folders, allFolders, notes, counts)
+    }
+
+    val uiState: StateFlow<HomeUiState> = combine(listState, navState) { ls, ns ->
+        val folderName = ns.folderId?.let { id -> ls.allFolders.firstOrNull { it.id == id }?.name }
+        val countMap = ls.counts.associate { it.folderId to it.count }
+        val total = ls.counts.sumOf { it.count }
         HomeUiState(
-            folders = folders,
-            allFolders = allFolders,
-            notes = notes,
+            folders = ls.folders,
+            allFolders = ls.allFolders,
+            notes = ls.notes,
             noteCounts = countMap,
             totalNoteCount = total,
-            currentFolderId = folderId,
+            currentFolderId = ns.folderId,
             currentFolderName = folderName,
-            tab = currentTab,
-            searchQuery = q,
-            showSidebar = sidebar,
+            tab = ns.tab,
+            searchQuery = ns.query,
+            showSidebar = ns.sidebar,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HomeUiState())
 
