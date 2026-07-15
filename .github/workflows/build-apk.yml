@@ -81,8 +81,11 @@ jobs:
       - name: Rename APK files for release
         run: |
           mkdir -p release-assets
-          cp app/build/outputs/apk/debug/*.apk release-assets/app-debug.apk
-          cp app/build/outputs/apk/release/*.apk release-assets/app-release.apk
+          ls -la app/build/outputs/apk/debug/
+          ls -la app/build/outputs/apk/release/
+          cp $(ls app/build/outputs/apk/debug/*.apk | head -1) release-assets/app-debug.apk
+          cp $(ls app/build/outputs/apk/release/*.apk | head -1) release-assets/app-release.apk
+          ls -la release-assets/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
