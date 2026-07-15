@@ -24,6 +24,9 @@ class NoteRepository @Inject constructor(
 
     fun observeTrashed(): Flow<List<NoteEntity>> = noteDao.observeTrashed()
 
+    fun observeNoteCountsByFolder(): Flow<List<com.xiaominote.app.data.db.dao.FolderNoteCount>> =
+        noteDao.observeNoteCountsByFolder()
+
     fun observeNote(id: Long): Flow<NoteEntity?> = noteDao.observeNote(id)
 
     fun search(query: String): Flow<List<NoteEntity>> = noteDao.search(query)

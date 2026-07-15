@@ -1,5 +1,6 @@
 package com.xiaominote.app.data.db.entity
 
+import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -9,6 +10,7 @@ import androidx.room.PrimaryKey
  * plain-text content for search. Soft-deleted notes go to the recycle bin
  * via [isTrashed]/[trashedAt] and are purged after a retention period.
  */
+@Immutable
 @Entity(
     tableName = "notes",
     indices = [

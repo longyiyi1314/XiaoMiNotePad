@@ -26,11 +26,15 @@ enum class HomeTab(val label: String) {
 
 data class HomeUiState(
     val folders: List<FolderEntity> = emptyList(),
+    val allFolders: List<FolderEntity> = emptyList(),
     val notes: List<NoteEntity> = emptyList(),
+    val noteCounts: Map<Long?, Int> = emptyMap(),
+    val totalNoteCount: Int = 0,
     val currentFolderId: Long? = null,
     val currentFolderName: String? = null,
     val tab: HomeTab = HomeTab.ALL,
     val searchQuery: String = "",
+    val showSidebar: Boolean = false,
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -44,6 +48,7 @@ class HomeViewModel @Inject constructor(
     private val currentFolder = MutableStateFlow<Long?>(null)
     private val tab = MutableStateFlow(HomeTab.ALL)
     private val query = MutableStateFlow("")
+    private val sidebarOpen = MutableStateFlow(false)
 
     private val notesFlow = combine(currentFolder, tab, query) { folderId, currentTab, q ->
         Triple(folderId, currentTab, q)
@@ -59,23 +64,53 @@ class HomeViewModel @Inject constructor(
         folderRepository.observeByParent(parentId)
     }
 
+    private val allFoldersFlow = folderRepository.observeAll()
+    private val noteCountsFlow = noteRepository.observeNoteCountsByFolder()
+
     val uiState: StateFlow<HomeUiState> = combine(
-        foldersFlow, notesFlow, currentFolder, tab, query
-    ) { folders, notes, folderId, currentTab, q ->
-        val folderName = folderId?.let { runCatching { folderRepository.getById(it)?.name }.getOrNull() }
+        foldersFlow, allFoldersFlow, notesFlow, noteCountsFlow, currentFolder, tab, query, sidebarOpen
+    ) { folders, allFolders, notes, counts, folderId, currentTab, q, sidebar ->
+        val folderName = folderId?.let { id -> allFolders.firstOrNull { it.id == id }?.name }
+        val countMap = counts.associate { it.folderId to it.count }
+        val total = counts.sumOf { it.count }
         HomeUiState(
             folders = folders,
+            allFolders = allFolders,
             notes = notes,
+            noteCounts = countMap,
+            totalNoteCount = total,
             currentFolderId = folderId,
             currentFolderName = folderName,
             tab = currentTab,
             searchQuery = q,
+            showSidebar = sidebar,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HomeUiState())
 
     fun openFolder(folderId: Long) {
         currentFolder.value = folderId
         tab.value = HomeTab.ALL
+        sidebarOpen.value = false
+    }
+
+    fun goToAllNotes() {
+        currentFolder.value = null
+        tab.value = HomeTab.ALL
+        sidebarOpen.value = false
+    }
+
+    fun goToFavorites() {
+        currentFolder.value = null
+        tab.value = HomeTab.FAVORITES
+        sidebarOpen.value = false
+    }
+
+    fun toggleSidebar() {
+        sidebarOpen.value = !sidebarOpen.value
+    }
+
+    fun closeSidebar() {
+        sidebarOpen.value = false
     }
 
     fun navigateUp(): Boolean {

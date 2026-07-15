@@ -1,9 +1,12 @@
 package com.xiaominote.app.drawing
 
+import androidx.compose.runtime.Immutable
+
 /**
  * A single point in a stroke. Coordinates are in canvas-space pixels.
  * [pressure] is 0f..1f (from stylus pressure or a default for finger).
  */
+@Immutable
 data class Point(
     val x: Float,
     val y: Float,
@@ -28,6 +31,7 @@ enum class PenType {
 /**
  * Configuration for the active tool.
  */
+@Immutable
 data class PenConfig(
     val type: PenType = PenType.BALLPOINT,
     val color: Long = 0xFF000000,
@@ -38,6 +42,7 @@ data class PenConfig(
 /**
  * A single continuous stroke drawn on the canvas.
  */
+@Immutable
 data class Stroke(
     val id: String,
     val config: PenConfig,

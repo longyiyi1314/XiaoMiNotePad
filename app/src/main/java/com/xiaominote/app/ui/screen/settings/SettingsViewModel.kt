@@ -24,6 +24,7 @@ data class SettingsUiState(
     val syncOnWifiOnly: Boolean = true,
     val darkTheme: String = "system",
     val dynamicColor: Boolean = true,
+    val themeSeed: String = "teal",
     val recycleBinRetentionDays: Int = 30,
     val verifying: Boolean = false,
     val verifyMessage: String? = null,
@@ -33,7 +34,7 @@ data class SettingsUiState(
 
 private data class SyncCreds(val token: String, val owner: String, val repo: String, val branch: String)
 private data class SyncOpts(val enabled: Boolean, val interval: Int, val wifiOnly: Boolean)
-private data class ThemeOpts(val darkTheme: String, val dynamicColor: Boolean)
+private data class ThemeOpts(val darkTheme: String, val dynamicColor: Boolean, val seed: String)
 private data class TransientState(
     val verifying: Boolean = false,
     val verifyMessage: String? = null,
@@ -59,8 +60,8 @@ class SettingsViewModel @Inject constructor(
     ) { e, i, w -> SyncOpts(e, i, w) }
 
     private val themeOpts = combine(
-        settings.darkTheme, settings.dynamicColor
-    ) { d, c -> ThemeOpts(d, c) }
+        settings.darkTheme, settings.dynamicColor, settings.themeSeed
+    ) { d, c, s -> ThemeOpts(d, c, s) }
 
     val uiState: StateFlow<SettingsUiState> = combine(
         creds, syncOpts, themeOpts, settings.recycleBinRetentionDays, transient
@@ -75,6 +76,7 @@ class SettingsViewModel @Inject constructor(
             syncOnWifiOnly = s.wifiOnly,
             darkTheme = th.darkTheme,
             dynamicColor = th.dynamicColor,
+            themeSeed = th.seed,
             recycleBinRetentionDays = retention,
             verifying = tr.verifying,
             verifyMessage = tr.verifyMessage,
@@ -114,6 +116,10 @@ class SettingsViewModel @Inject constructor(
 
     fun setDynamicColor(enabled: Boolean) {
         viewModelScope.launch { settings.setDynamicColor(enabled) }
+    }
+
+    fun setThemeSeed(seedId: String) {
+        viewModelScope.launch { settings.setThemeSeed(seedId) }
     }
 
     fun setRecycleBinRetention(days: Int) {

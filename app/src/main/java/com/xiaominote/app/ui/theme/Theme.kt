@@ -61,6 +61,7 @@ private val DarkColors = darkColorScheme(
 fun NotePadTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
+    seedId: String = "teal",
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -68,8 +69,8 @@ fun NotePadTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        darkTheme -> DarkColors
-        else -> LightColors
+        darkTheme -> getDarkColorScheme(seedId)
+        else -> getLightColorScheme(seedId)
     }
 
     MaterialTheme(

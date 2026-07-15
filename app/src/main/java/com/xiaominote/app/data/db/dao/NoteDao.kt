@@ -24,6 +24,9 @@ interface NoteDao {
     @Query("SELECT * FROM notes WHERE isTrashed = 1 ORDER BY trashedAt DESC")
     fun observeTrashed(): Flow<List<NoteEntity>>
 
+    @Query("SELECT folderId, COUNT(*) as cnt FROM notes WHERE isTrashed = 0 GROUP BY folderId")
+    fun observeNoteCountsByFolder(): Flow<List<FolderNoteCount>>
+
     @Query("SELECT * FROM notes WHERE id = :id LIMIT 1")
     fun observeNote(id: Long): Flow<NoteEntity?>
 

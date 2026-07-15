@@ -1,5 +1,6 @@
 package com.xiaominote.app.data.db.entity
 
+import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -9,6 +10,7 @@ import androidx.room.PrimaryKey
  * A folder that groups notes. Supports one level of nesting via [parentId]
  * (null = top level).
  */
+@Immutable
 @Entity(
     tableName = "folders",
     indices = [Index("parentId"), Index("remoteId", unique = true)]

@@ -38,6 +38,7 @@ class SettingsRepository @Inject constructor(
     // Theme
     val darkTheme: Flow<String> = context.dataStore.data.map { it[DARK_THEME] ?: "system" }
     val dynamicColor: Flow<Boolean> = context.dataStore.data.map { it[DYNAMIC_COLOR] ?: true }
+    val themeSeed: Flow<String> = context.dataStore.data.map { it[THEME_SEED] ?: "teal" }
 
     // Recycle bin retention in days (0 = never auto-purge)
     val recycleBinRetentionDays: Flow<Int> = context.dataStore.data.map { it[RETENTION_DAYS] ?: 30 }
@@ -79,6 +80,10 @@ class SettingsRepository @Inject constructor(
         context.dataStore.edit { it[DYNAMIC_COLOR] = enabled }
     }
 
+    suspend fun setThemeSeed(seedId: String) {
+        context.dataStore.edit { it[THEME_SEED] = seedId }
+    }
+
     suspend fun setRecycleBinRetention(days: Int) {
         context.dataStore.edit { it[RETENTION_DAYS] = days.coerceAtLeast(0) }
     }
@@ -101,6 +106,7 @@ class SettingsRepository @Inject constructor(
         private val WIFI_ONLY = booleanPreferencesKey("sync_wifi_only")
         private val DARK_THEME = stringPreferencesKey("dark_theme")
         private val DYNAMIC_COLOR = booleanPreferencesKey("dynamic_color")
+        private val THEME_SEED = stringPreferencesKey("theme_seed")
         private val RETENTION_DAYS = intPreferencesKey("recycle_retention_days")
         private val DEFAULT_PEN_COLOR = longPreferencesKey("default_pen_color")
         private val DEFAULT_PEN_SIZE = floatPreferencesKey("default_pen_size")

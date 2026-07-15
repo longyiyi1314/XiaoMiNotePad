@@ -1,17 +1,26 @@
 package com.xiaominote.app.ui.screen.settings
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,9 +42,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.xiaominote.app.ui.theme.ThemeSeed
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -155,6 +166,21 @@ fun SettingsScreen(
                 checked = state.dynamicColor,
                 onChange = viewModel::setDynamicColor,
             )
+            Spacer(Modifier.size(8.dp))
+            Text("主题配色", style = MaterialTheme.typography.bodyLarge)
+            Spacer(Modifier.size(4.dp))
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                ThemeSeed.entries.forEach { seed ->
+                    ThemeSeedItem(
+                        seed = seed,
+                        selected = state.themeSeed == seed.id,
+                        onClick = { viewModel.setThemeSeed(seed.id) },
+                    )
+                }
+            }
 
             HorizontalDivider()
 
@@ -192,5 +218,40 @@ private fun SwitchRow(
             Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         Switch(checked = checked, onCheckedChange = onChange)
+    }
+}
+
+@Composable
+private fun ThemeSeedItem(
+    seed: ThemeSeed,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    Card(
+        onClick = onClick,
+        colors = CardDefaults.cardColors(containerColor = seed.seed.copy(alpha = 0.15f)),
+        border = if (selected) BorderStroke(2.dp, seed.seed) else null,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(56.dp)
+                .padding(8.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (selected) {
+                Icon(
+                    Icons.Filled.Done,
+                    contentDescription = null,
+                    tint = seed.seed,
+                    modifier = Modifier.size(28.dp),
+                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .background(seed.seed, CircleShape)
+                )
+            }
+        }
     }
 }
